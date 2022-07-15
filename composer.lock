@@ -21,7 +21,7 @@
                 "shasum": ""
             },
             "require": {
-                "php": "~7.4.0 || ~8.0.0 || ~8.1.0",
+                "php": "~8.0.0 || ~8.1.0",
                 "stella-maris/clock": "^0.1.4"
             },
             "provide": {
