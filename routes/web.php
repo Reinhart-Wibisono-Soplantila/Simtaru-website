@@ -37,7 +37,7 @@ Route::get('/regulasi-pp', [simtaruController::class, 'regulasiPP']);
 
 Route::get('/tata-ruang', [simtaruController::class, 'mapsIndex']);
 Route::get('/tata-ruang/detail', [simtaruController::class, 'mapsDetail']);
-Route::get('/pendaftaran', [simtaruController::class, 'pendaftaranIndex']);
+Route::get('/pendaftaran', [simtaruController::class, 'pendaftaranIndex'])->name('pendaftaran');
 Route::post('/pendaftaran', [simtaruController::class, 'pendaftaranStore']);
 Route::get('/tanggapan', [simtaruController::class, 'tanggapanIndex']);
 Route::post('/tanggapan', [simtaruController::class, 'tanggapanStore']);

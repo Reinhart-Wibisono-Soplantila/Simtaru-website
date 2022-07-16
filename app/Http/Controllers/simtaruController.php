@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+
 
 class simtaruController extends Controller
 {
@@ -110,14 +112,19 @@ class simtaruController extends Controller
         $current_time = $current_time->toDateTimeString();
 
         $SHP = $request->file('SHP');
-        // $name = $SHP->getClientOriginalName();
-        // $extension = $SHP->getClientOriginalExtension();
         $file = $SHP->getClientOriginalName();
         $firebase_storage_path = 'SHP/';
-        // $localfolder = public_path('firebase-temp-uploads') . '/';
-        // if ($SHP->move($localfolder, $file)) {
-        // $uploadedfile = fopen($SHP, 'r');
-        app('firebase.storage')->getBucket()->upload($SHP, ['name' => $firebase_storage_path . $file, 'public' => true]);
+
+        $uuid = (string) Str::uuid();
+        // app('firebase.storage')->getBucket()->upload($SHP, ['name' => $firebase_storage_path . $file, 'public' => true, 'metadata' => ['firebaseStorageDownloadTokens' => $uuid]]);
+        echo "await admin.storage().bucket().upload(filePath, {
+            destination: thumbFilePathForUpload,
+            metadata: {
+                metadata: {
+                    firebaseStorageDownloadTokens: uuid,
+                }
+            },
+        });";
         $newDatas = app('firebase.firestore')->database()->collection('DaftarPerizinan')->newDocument();
         $newDatas->set([
             'createdAt' => $current_time,
@@ -136,7 +143,8 @@ class simtaruController extends Controller
             'koordinat' => $request->koordinat,
             'fileUrl' => $file,
         ]);
-        return view('Main.Page.pendaftaran');
+        // return view('Main.Page.pendaftaran')->with('alert', 'Data berhasil di upload');
+        return redirect()->back()->with('success', 'Pendaftaran berhasil dilakukan');
     }
 
     public function tanggapanIndex()
@@ -159,6 +167,6 @@ class simtaruController extends Controller
             'judul' => $validatedData['judul'],
             'pesan' => $validatedData['pesan'],
         ]);
-        return view('Main.Page.comment');
+        return redirect()->back()->with('success', 'Tanggapan berhasil disimpan');
     }
 }

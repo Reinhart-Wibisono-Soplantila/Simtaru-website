@@ -16,5 +16,6 @@
     @include('Main.Include.Footer')
     @include('Main.Include.Script')
     @stack('addonScript')
+    @include('sweetalert::alert')
 </body>
 </html>

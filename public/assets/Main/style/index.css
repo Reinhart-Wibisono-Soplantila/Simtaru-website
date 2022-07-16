@@ -511,7 +511,7 @@ nav button a:hover{
   width: 10%;
   /* margin: auto 12px; */
   border-color: transparent;
-  background-color: var(--gray-secondary);
+  background-color: var(--blue-secondary);
   color: white;
 }
 
@@ -525,8 +525,8 @@ nav button a:hover{
 
 #filter .row .dropdown select{
   background-color: var(--white-primary-text);
-  color: var(--gray-secondary);
-  border-color: var(--gray-secondary);
+  color: var(--blue-secondary);
+  border-color: var(--blue-secondary);
 }
 
 
@@ -663,7 +663,7 @@ main{
 #pendaftaran-box #tomboldaftar{
   border-radius: 8px;
   height: 50px;
-  background-color: #d9d9d9;
+  background-color: var(--blue-secondary);
   border-color: #d9d9d9;
 }
 
