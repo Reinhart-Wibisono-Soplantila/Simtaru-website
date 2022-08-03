@@ -134,7 +134,7 @@
         <div class="nav-wrapper">
           <ul class="nav-menu ">
             <li class="links"><a href="{{url('/')}}">Home</a></li>
-            <li class="links"><a href="{{url('/tata-ruang')}}">Tata Ruang</a></li>
+            <li class="links"><a href="{{url('/tata-ruang')}}" target="_blank">Tata Ruang</a></li>
             <li class="links"><a href="{{url('/regulasi')}}">Regulasi</a></li>
             <li class="links"><a class="active"  href="{{url('/publikasi')}}">Publikasi</a></li>
             <li class="links"><a href="{{url('/tanggapan')}}">Tanggapan</a></li>
@@ -182,24 +182,24 @@
             <div class="cards">
                 @forelse ($datas as $item)
                 {{-- nyalakan kalau sudah ada kategori di publikasi --}}
-                    {{-- @if ($item->data()['kategori'] == 'Undang-Undang') --}}
+                    @if ($item->data()['tahun'] == 2020)
                     <div class="wrapper-undang2 row">
                         <div class="col-lg-2 file-logo">
                             <img src="{{URL::asset('assets/Main/images/pdf.png')}}" alt="" />
                         </div>
                         <div class="col-lg-10 file-element">
                             {{-- nama dan deskripsi perlu diganti setelah publikasi sudah ada --}}
-                          <h5>2020 UU Nomor 45 Tahun 2009</h5>
-                          <p>TENTANG PERUBAHAN ATAS UNDANG-UNDANG NOMOR 31 TAHUN 2004 TENTANG PERIKANAN</p>
+                          <h5>{{$item->data()['judul']}}</h5>
+                          <p>{{$item->data()['penerbit']}}</p>
                           <div class="button">
                             <a href="{{$item->data()['link']}}"><button type="button">Download</button></a>
                           </div>
                         </div>
                       </div>
                       <br>
-                    {{-- @else
+                    @else
                         <?php $empty = True ?>
-                    @endif --}}
+                    @endif 
                     @empty
                         Maaf, sepertinya data yang anda cari tidak ada
                     @endforelse
@@ -213,24 +213,24 @@
             <div class="cards"> 
                 @forelse ($datas as $item)
                 {{-- nyalakan kalau sudah ada kategori di publikasi --}}
-                    {{-- @if ($item->data()['kategori'] == 'Undang-Undang') --}}
+                    @if ($item->data()['tahun'] == 2021)
                     <div class="wrapper-undang2 row">
                         <div class="col-lg-2 file-logo">
                             <img src="{{URL::asset('assets/Main/images/pdf.png')}}" alt="" />
                           
                         </div>
                         <div class="col-lg-10 file-element">
-                          <h5>2020 UU Nomor 45 Tahun 2009</h5>
-                          <p>TENTANG PERUBAHAN ATAS UNDANG-UNDANG NOMOR 31 TAHUN 2004 TENTANG PERIKANAN</p>
+                            <h5>{{$item->data()['judul']}}</h5>
+                            <p>{{$item->data()['penerbit']}}</p>
                           <div class="button">
                             <a href="{{$item->data()['link']}}"><button type="button">Download</button></a>
                           </div>
                         </div>
                       </div>
                       <br>
-                    {{-- @else
+                    @else
                         <?php $empty = True ?>
-                    @endif --}}
+                    @endif
                     @empty
                         Maaf, sepertinya data yang anda cari tidak ada
                     @endforelse
