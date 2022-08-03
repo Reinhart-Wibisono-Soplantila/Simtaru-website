@@ -24,6 +24,7 @@ body {
 .wrapper-regulasi{
   background-color: var(--gray-primary-bg);
 }
+
 /* ---- NAVBAR ---- */
 nav {
   height: 70px;
@@ -36,28 +37,40 @@ nav {
   box-shadow: 0px 1px 20px rgb(0 0 0 / 0.1);
   justify-content: space-around;
   align-items: center;
-  z-index: 2;
+  z-index: 4;
 }
-nav .nav-child-wrapper {
+nav .nav-wrapper {
   display: flex;
   justify-content: end;
+}
+nav .active-page {
+  display: none;
 }
 nav ul {
   display: flex;
   padding: 10px 130px;
   margin-top: revert;
   list-style: none;
-  /* background-color: #8F8E8E; */
 }
 nav ul li a {
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 32px;
-  padding: 10px 20px 17px;
+  padding: 10px 20px 18px;
   color: var(--gray-secondary);
   cursor: pointer;
 }
+nav ul li form button.button {
+  background-color: var(--blue-primary);
+  color: var(--white-primary-text);
+  border: none;
+  border-radius: 8px;
+  padding: 11px 30px;
+  font-weight: 700;
+  font-size: 16px;
+  margin-left: 25px;
+} 
 nav ul li a.active{
   color: var(--blue-primary);
   border-bottom: 6px solid var(--blue-primary);
@@ -65,25 +78,55 @@ nav ul li a.active{
 nav ul li a:hover{
   color: var(--blue-primary);
 }
-nav button {
-  padding: 0 27px;
-  background-color: var(--blue-primary);
-  color: var(--white-primary-text);
-  border: none;
-  border-radius: 8px;
-  width: 165px;
-  height: 42px;
-  font-weight: 700;
-  font-size: 18px;
+nav .menu-toggle{
+  display: none;
+  flex-direction: column;
+  height: 20px;
+  justify-content: space-between;
+  position: relative;
 }
-
+nav .menu-toggle input{
+  position: absolute;
+  width: 40px;
+  height: 28px;
+  left: -6px;
+  top: -4px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 5;
+}
+nav .menu-toggle span{
+  display: block;
+  width: 28px;
+  height: 3px;
+  border-radius: 8px;
+  background-color: var(--blue-primary);
+  transition: all 0.5s;
+}
+nav .menu-toggle span:nth-child(2){
+  transform-origin: 0 0 ;
+}
+nav .menu-toggle span:last-child{
+  transform-origin: 0 0 ;
+}
+nav .menu-toggle input:checked ~ span:nth-child(2) {
+  transform: rotate(45deg) translate(1px, -1px);
+}
+nav .menu-toggle input:checked ~ span:nth-child(3) {
+  transform: scale(0);
+  opacity: 0;
+}
+nav .menu-toggle input:checked ~ span:last-child {
+  transform: rotate(-45deg) translate(-3px, 0px);
+}
 
 /* ---- HERO ---- */
 #hero {
-  background: url('../images/hero-logo.png');
-  height: 45vh;
-  background-size: 100%;
+  background: url('../images/hero-logo.png') var(--blue-secondary);
+  height: 325px;
+  background-size: cover;
   background-repeat: no-repeat;
+  background-position: center;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,7 +143,10 @@ nav button {
 #pagination {
   margin-bottom: 50px;
 }
-#pagination ul {
+#pagination .wrapper-pagination-mobile{
+  display: none;
+}
+#pagination .wrapper-pagination ul {
   display: flex;
   justify-content: center;
 }
@@ -110,12 +156,12 @@ nav button {
   max-width: 950px;
   margin: auto;
 }
-#pagination ul li{
+#pagination .wrapper-pagination ul li{
   float: left;
   list-style: none;
   padding: 25px 35px;
 }
-#pagination ul li a {
+#pagination .wrapper-pagination ul li a {
   text-decoration: none;
   font-size: 18px;
   font-weight: 700;
@@ -123,10 +169,13 @@ nav button {
   color: var(--gray-secondary);
   cursor: pointer;
 }
-#pagination ul li a:hover{
+/* #pagination ul li a.active{
+  color: var(--blue-secondary);
+} */
+#pagination .wrapper-pagination ul li a:hover{
   color: var(--blue-primary);
 }
-#pagination ul li a.active{
+#pagination .wrapper-pagination ul li a.active{
   padding-bottom: 23px;
   color: var(--blue-primary);
   border-bottom: 6px solid var(--blue-primary);
@@ -135,7 +184,6 @@ nav button {
 /* --- CONTENT PERUNDANG-UNDANGAN --- */
 #content {
   margin-bottom: 60px;
-  background-color: var(--white-primary-text);
 }
 .wrapper-content {
   background-color: var(--white-primary-text);
@@ -163,25 +211,25 @@ nav button {
   width: 100px;
 }
 .file-element h5 {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 28px;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 24px;
 }
 .file-element p {
   color: var(--gray-secondary);
-  font-size: 20px;
-  font-weight: 400; 
-  line-height: 28px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
 }
 .file-element button {
-  padding: 10px 27px;
+  padding: 6px;
   background-color: var(--blue-primary);
   color: var(--white-primary-text);
   border: none;
   border-radius: 8px;
   width: 100%;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 /* --- FOOTER --- */
@@ -197,9 +245,9 @@ nav button {
   width: 40px;
 }
 #footer .footer-title h1{
-  font-size: 58px;
+  font-size: 50px;
   font-weight: 700;
-  line-height: 88px;
+  line-height: 80px;
   color: var(--white-primary-text);
 } 
 #footer.intro-web{
@@ -207,106 +255,199 @@ nav button {
 } 
 #footer p{
   font-weight: 400;
-  font-size: 19px;
+  font-size: 16px;
   color: var(--gray-rarely-used);
-  padding-right: 100px;
+  padding-right: 116px;
 } 
 #footer .title{
-  font-size:19px;
+  font-size:16px;
   font-weight: 700;
-  line-height: 36px;
+  line-height: 24px;
   color: var(--white-primary-text);
 }
 #footer .copyright{
-  font-size:19px;
+  font-size:16px;
   padding-right: 140px;
   font-weight: 700;
-  line-height: 36px;
+  line-height: 24px;
   color: var(--white-primary-text);
 }
+#footer p span{
+  display: block;
+}
 
-@media only screen and (max-width: 1280px) {
-
-  nav ul li a {
-    font-size: 16px;
-    padding: 10px 20px 21px;
-  }
-
-  /* ---- HERO ---- */
-  #hero {
-    height: 45vh;
-    margin: 70px 0;
-  }
-
-  /* ---  PAGINATION --- */
-  #pagination {
-    margin-bottom: 70px;
-  }
-  #pagination .wrapper-pagination{
-    max-width: 1000px;
-  }
-  #pagination ul li{
-    padding: 25px 40px;
-  }
-  #pagination ul li a {
-    font-size: 16px;
-  }
-  #pagination ul li a.active{
-    padding-bottom: 25px;
-    color: var(--blue-primary);
-    border-bottom: 6px solid var(--blue-primary);
-  }
-
-  /* --- CONTENT PERUNDANG-UNDANGAN --- */
-  .wrapper-content {
-    background-color: var(--white-primary-text);
-    max-width: 1000px;
-    border-radius: 24px;
+@media (max-width:1000px) {
+  nav ul {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: auto;
-    padding:30px;
-  } 
-  .wrapper-undang2{
-    max-width: 1000px;
-    padding: 15px 10px;
-    border: solid var(--gray-secondary) 3px;
-    border-radius: 24px;
+    padding: 10px 130px;
+    margin-top: revert;
+    list-style: none;
   }
-  .file-logo img {
-    width: 120px;
+  nav ul li a {
+    font-size: 14px;
+    padding: 10px 20px 22px;
   }
-  .file-element h5 {
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 36px;
-  }
-  .file-element p {
-    color: var(--gray-secondary);
-    font-weight: 400; 
-    font-size: 18px;
-    line-height: 36px;
-  }
-  .file-element button {
-    padding: 10px 27px;
+  nav ul li a.button {
     background-color: var(--blue-primary);
     color: var(--white-primary-text);
     border: none;
     border-radius: 8px;
-    width: 100%;
+    padding: 11px 30px;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 14px;
+    margin-left: 25px;
+  }
+  nav ul li a.active{
+    border-bottom: 4px solid var(--blue-primary);
+  }
+  #pagination .wrapper-pagination{
+  max-width: 840px;
   }
 
-  /* --- FOOTER --- */
-  #footer{
-    font-size: 18px;
-    background-color: var(--blue-secondary);
-    color: var(--gray-rarely-used);
+  .wrapper-content{
+    max-width: 840px;
   }
+  .file-logo img{
+    width: 90px;
+  }
+  .file-element h5 {
+    font-size: 16px;
+  }
+  .file-element p {
+    font-size: 16px;
+  }
+}
+@media screen and (max-width:990px) {
+  #pagination .wrapper-pagination{
+    display: none;
+  }
+  #pagination .wrapper-pagination-mobile{
+    display: block;
+  }
+  #pagination .wrapper-pagination-mobile {
+    max-width: 840px;
+    background-color: var(--white-primary-text);
+    border-radius: 24px;
+    margin: auto;
+    padding: 25px 0;
+  }
+  #pagination .wrapper-pagination-mobile ul{
+    display: flex;
+    justify-content: center;
+  }
+  #pagination .wrapper-pagination-mobile ul li{
+    list-style: none;
+    padding: 0 10px;
+  }
+  #pagination .wrapper-pagination-mobile ul li a {
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 32px;
+    color: var(--gray-secondary);
+    cursor: pointer;
+  }
+  #pagination .wrapper-pagination-mobile ul li a:hover{
+    color: var(--blue-primary);
+  }
+  #pagination .wrapper-pagination-mobile ul li a.active{
+    padding-bottom: 23px;
+    color: var(--blue-primary);
+    border-bottom: 6px solid var(--blue-primary);
+  }
+}
+@media screen and (max-width:945px) {
+  nav {
+    justify-content: space-between;
+    padding: 0 100px;
+  }
+  nav .active-page {
+    display: flex;
+    margin: auto;
+  }
+  nav .active-page a {
+    text-decoration: none;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 32px;
+    color: var(--blue-primary);
+    cursor: pointer;
+  }
+  nav .active-page a.active{
+    padding: 17px;
+    border-bottom: 4px solid var(--blue-primary);
+  }
+  nav ul{
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 75vh;
+    width: 40%;
+    flex-direction: column;
+    background-color: var(--white-primary-text);
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: -100;
+    transform: translateX(100%);
+    transition: all 0.8s;
+    opacity: 0;
+  }
+  nav ul li a{
+    margin: auto;
+    display: flex;
+    width: 150px;
+    font-size: 13px;
+  }
+  nav ul li a.active {
+    border-bottom: 4px solid var(--blue-primary);
+  }
+  nav ul li a.buton {
+    margin-left: 0;
+  }
+  nav .menu-toggle {
+    display: flex;
+  }
+  nav ul.slide{
+    padding-top: 30px;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  #pagination .wrapper-pagination-mobile{
+    max-width: 80%;
+  }
+  .wrapper-content{
+    max-width: 80%;
+  }
+}
 
+@media screen and (max-width:860px) {
+  .file-logo img{
+    width: 80px;
+  }
+}
+@media screen and (max-width:768px) {
+  .file-logo img {
+    margin: 10px auto 0;
+  }
+  .file-element{
+    padding: 30px 0 10px;
+  }
+  #footer p span{
+    display: inline;
+  }
+  #footer .footer-container {
+    padding: 60px 50px;
+  }
+  #footer p{
+    font-size: 14px;
+    padding-right: 0px;
+  } 
+  #footer .title{
+    font-size:14px;
+  }
   #footer .copyright{
-    padding-right: 90px;
+    font-size:14px;
+    padding-right: 0px;
   }
 }

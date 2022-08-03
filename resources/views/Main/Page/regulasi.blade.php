@@ -3,20 +3,30 @@
 @section('Main')
 <div class="wrapper-regulasi">
   <nav>
-    <div class="col-md-9 nav-child-wrapper">
+    <div class="active-page">
+      <a class="active" href="#hero">Regulasi</a>
+    </div>
+
+    <div class="nav-wrapper">
       <ul class="nav-menu ">
         <li class="links"><a  href="{{url('/')}}">Home</a></li>
         <li class="links"><a href="{{url('/tata-ruang')}}">Tata Ruang</a></li>
         <li class="links"><a class="active" href="{{url('/regulasi')}}">Regulasi</a></li>
         <li class="links"><a href="{{url('/publikasi')}}">Publikasi</a></li>
         <li class="links"><a href="{{url('/tanggapan')}}">Tanggapan</a></li>
+        <li class="button-pendaftaran">
+          <form action="/pendaftaran" method="GET">
+            @csrf
+            <button class="button">Pendaftaran</button>
+          </form>
+        </li>
       </ul>
-    </div>
-    <div class="col-md-3 button">
-      <form action="/pendaftaran" method="GET">
-        @csrf
-        <button>Pendaftaran</button>
-      </form>
+   </div>
+    <div class="menu-toggle">
+      <input type="checkbox">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
   </nav>
 
@@ -43,6 +53,37 @@
             <li>
               <a data-bs-toggle="collapse" href="#pp-collapse" role="button" aria-expanded="true" aria-controls="pp-collapse" >PP</a>
             </li>
+            <li>
+              <a data-bs-toggle="collapse" href="#permen-collapse" role="button" aria-expanded="true" aria-controls="permen-collapse">PERMEN</a>
+            </li>
+            <li>
+              <a data-bs-toggle="collapse" href="#perda-collapse" role="button" aria-expanded="true" aria-controls="perda-collapse">PERDA</a>
+            </li>
+            <li>
+              <a data-bs-toggle="collapse" href="#pergub-collapse" role="button" aria-expanded="true" aria-controls="pergub-collapse">PERGUB</a>
+            </li>
+          </p>
+        </ul>
+      </div>
+
+      <div class="wrapper-pagination-mobile">
+        <ul>
+          <p>
+            <li>
+              <a  data-bs-toggle="collapse" href="#uu-collapse" role="button" aria-expanded="true" aria-controls="uu-collapse" >UU</a></li>
+            <li>
+              <a data-bs-toggle="collapse" href="#perpres-collapse" role="button" aria-expanded="false" aria-controls="perpres-collapse">PERPRES</a>
+            </li>
+            <li>
+              <a data-bs-toggle="collapse" href="#kepres-collapse" role="button" aria-expanded="true" aria-controls="kepres-collapse" >KEPRES</a>
+            </li>
+            <li>
+              <a data-bs-toggle="collapse" href="#pp-collapse" role="button" aria-expanded="true" aria-controls="pp-collapse" >PP</a>
+            </li>
+          </p>
+        </ul>
+        <ul>
+          <p>
             <li>
               <a data-bs-toggle="collapse" href="#permen-collapse" role="button" aria-expanded="true" aria-controls="permen-collapse">PERMEN</a>
             </li>

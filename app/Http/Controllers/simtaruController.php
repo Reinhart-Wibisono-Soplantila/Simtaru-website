@@ -4,15 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-
+use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class simtaruController extends Controller
 {
     public function index()
     {
-        return view('Main.Page.index');
+        $datas = app('firebase.firestore')->database()->collection('InfoWeb')->document('rgYeQRniohc4Ptg62ujU')->snapshot();
+        return view('Main.Page.index', ['datas' => $datas]);
+        // $datas = explode('<h2>', $datas->data()['deskripsiWeb']);
+        // return $datas;
     }
 
     public function regulasiIndex()
@@ -23,64 +28,42 @@ class simtaruController extends Controller
 
     public function publikasiIndex()
     {
-        return view('Main.Page.publikasi');
+        $datas = app('firebase.firestore')->database()->collection('Publikasi')->documents();
+        return view('Main.Page.publikasi', ['datas' => $datas]);
     }
-
-    // public function regulasiUU()
-    // {
-    //     return view('Main.Page.regulasi-uu');
-    // }
-
-    // public function regulasiKepres()
-    // {
-    //     return view('Main.Page.regulasi-kepres');
-    // }
-
-    // public function regulasiPerda()
-    // {
-    //     return view('Main.Page.regulasi-perda');
-    // }
-
-    // public function regulasiPergub()
-    // {
-    //     return view('Main.Page.regulasi-pergub');
-    // }
-
-    // public function regulasiPermen()
-    // {
-    //     return view('Main.Page.regulasi-permen');
-    // }
-
-    // public function regulasiPerpes()
-    // {
-    //     return view('Main.Page.regulasi-perpres');
-    // }
-
-    // public function regulasiPP()
-    // {
-    //     return view('Main.Page.regulasi-pp');
-    // }
 
     public function mapsIndex()
     {
-        $datas = app('firebase.firestore')->database()->collection('Peta')->document('0LP7G6affsbKc99sh5gD')->snapshot();
-        return view('Main.Page.maps', ['datas' => $datas]);
+        $datas = app('firebase.firestore')->database()->collection('Peta')->documents();
+        $maps = app('firebase.firestore')->database()->collection('Peta')->documents();
+        return view('Main.Page.maps', ['datas' => $datas, 'maps' => $maps]);
     }
 
     public function mapsDetail(Request $request)
     {
-        if ($request->Kota == 'Makassar' && $request->RTR == 'RTRW Kab/Kota') {
-            $datas = app('firebase.firestore')->database()->collection('Peta')->document('EC4sTg1OI0EMyNqKlJxv')->snapshot();
-        } elseif ($request->Kota == 'Gowa' && $request->RTR == 'RTDTR Kab/Kota') {
-            $datas = app('firebase.firestore')->database()->collection('Peta')->document('aMm5oKrJaeCMESgpPqjK')->snapshot();
-        } elseif ($request->Kota == 'Maros' && $request->RTR == 'RTDTR Kab/Kota') {
-            $datas = app('firebase.firestore')->database()->collection('Peta')->document('dhqNLJ8DlIuwUDD4IpBk')->snapshot();
-        } elseif ($request->Kota == 'Makassar' && $request->RTR == 'RTR Maminasata') {
-            $datas = app('firebase.firestore')->database()->collection('Peta')->document('0LP7G6affsbKc99sh5gD')->snapshot();
-        } else {
-            $datas = null;
+        $maps = app('firebase.firestore')->database()->collection('Peta')->documents();
+        $datas = app('firebase.firestore')->database()->collection('Peta')->documents();
+        foreach ($datas as $item) {
+            if ($request->Kota == $item->data()['lokasi'] && $request->RTR == $item->data()['rtr']  && $request->jenis_peta == $item->data()['jenis_peta']) {
+                $maps = app('firebase.firestore')->database()->collection('Peta')->where('mapUrl', '=', $item->data()['mapUrl'])->documents();
+                break;
+            } else {
+                $maps = null;
+            }
         }
-        return view('Main.Page.maps', ['datas' => $datas]);
+        // if ($request->Kota == 'Makassar' && $request->RTR == 'RTRW Kab/Kota') {
+        //     $datas = app('firebase.firestore')->database()->collection('Peta')->document('EC4sTg1OI0EMyNqKlJxv')->snapshot();
+        // } elseif ($request->Kota == 'Gowa' && $request->RTR == 'RTDTR Kab/Kota') {
+        //     $datas = app('firebase.firestore')->database()->collection('Peta')->document('aMm5oKrJaeCMESgpPqjK')->snapshot();
+        // } elseif ($request->Kota == 'Maros' && $request->RTR == 'RTDTR Kab/Kota') {
+        //     $datas = app('firebase.firestore')->database()->collection('Peta')->document('dhqNLJ8DlIuwUDD4IpBk')->snapshot();
+        // } elseif ($request->Kota == 'Makassar' && $request->RTR == 'RTR Maminasata') {
+        //     $datas = app('firebase.firestore')->database()->collection('Peta')->document('0LP7G6affsbKc99sh5gD')->snapshot();
+        // } else {
+        //     $datas = null;
+        // }
+        // return dd($datas);
+        return view('Main.Page.maps', ['datas' => $datas, 'maps' => $maps]);
     }
 
     public function pendaftaranIndex()
@@ -103,7 +86,7 @@ class simtaruController extends Controller
             'StatusKewarganegaraan' => 'required',
             'Email' => 'required|email',
             'NomorHandphone' => 'required',
-            'SHP' => 'required|file|mimes:rar',
+            'SHP' => 'required|file|mimes:zip',
             'koordinat' => 'required'
         ]);
 
@@ -111,20 +94,50 @@ class simtaruController extends Controller
         $current_time->timezone('GMT+8');
         $current_time = $current_time->toDateTimeString();
 
-        $SHP = $request->file('SHP');
-        $file = $SHP->getClientOriginalName();
-        $firebase_storage_path = 'SHP/';
+        // $SHP = $request->file('SHP');
+        // $file = $SHP->getClientOriginalName();
+        // $firebase_storage_path = 'SHP/';
+        // $bucket = app('firebase.storage')->getBucket();
+        // $object = $bucket->upload($SHP, [
+        //     'name' => $firebase_storage_path . $file,
+        //     'predefinedAcl' => 'publicRead'
+        // ]);
 
-        $uuid = (string) Str::uuid();
-        // app('firebase.storage')->getBucket()->upload($SHP, ['name' => $firebase_storage_path . $file, 'public' => true, 'metadata' => ['firebaseStorageDownloadTokens' => $uuid]]);
-        echo "await admin.storage().bucket().upload(filePath, {
-            destination: thumbFilePathForUpload,
-            metadata: {
-                metadata: {
-                    firebaseStorageDownloadTokens: uuid,
-                }
-            },
-        });";
+        // $publicUrl = "https://{$bucket->name()}.storage.googleapis.com/{$object->name()}";
+
+        // ***************************
+        $image = $request->file('SHP'); //image file from frontend  
+        $firebase_storage_path = 'SHP/';
+        $name = $image->getClientOriginalName();
+        $localfolder = public_path('firebase-temp-uploads') . '/';
+        $extension = $image->getClientOriginalExtension();
+        $file      = $name . '.' . $extension;
+        $FileName = $request->Nama . '_' . $current_time . '.' . $extension;
+        $bucket = app('firebase.storage')->getBucket();
+        $uuid = Uuid::uuid4()->toString();
+        if ($image->move($localfolder, $file)) {
+            $uploadedfile = fopen($localfolder . $file, 'r');
+            $object = $bucket->upload(
+                $uploadedfile,
+                ['name' => $firebase_storage_path . $name],
+                ['acl' => []],
+                ['predefinedAcl' => 'publicRead'],
+                ['metadata' => [
+                    'firebaseStorageDownloadTokens' => $uuid
+                ]],
+                ['firebaseStorageDownloadTokens' => $uuid]
+            );
+            //will remove from local laravel folder  
+            unlink($localfolder . $file);
+        }
+
+
+        // $publicUrl = "https://{$bucket->name()}.storage.googleapis.com/{$object->name()}";
+
+        // **************************************
+
+
+
         $newDatas = app('firebase.firestore')->database()->collection('DaftarPerizinan')->newDocument();
         $newDatas->set([
             'createdAt' => $current_time,
@@ -141,7 +154,7 @@ class simtaruController extends Controller
             'email' => $request->Email,
             'noTlp' => $request->NomorHandphone,
             'koordinat' => $request->koordinat,
-            'fileUrl' => $file,
+            'namaFile' => $FileName
         ]);
         // return view('Main.Page.pendaftaran')->with('alert', 'Data berhasil di upload');
         return redirect()->back()->with('success', 'Pendaftaran berhasil dilakukan');
