@@ -96,46 +96,11 @@
 
                   <label for="inputEmail4" id="label-pendaftaran" class="form-label pt-3">Asal Provinsi</label>
                   <div class="input-group">
-                    <select class="form-select" name="Provinsi" id="input-pendaftaran" aria-label="Example select with button addon" required >
+                    <select class="form-select Provinsi" name="Provinsi" id="input-pendaftaran" aria-label="Example select with button addon" required >
                       <option disabled selected value="">Pilih Provinsi</option>
-                      <option value="Nanggroe Aceh Darussalam">Nanggroe Aceh Darussalam</option>
-                      <option value="Sumatera Utara">Sumatera Utara</option>
-                      <option value="Sumatera Selatan">Sumatera Selatan</option>
-                      <option value="Sumatera Barat">Sumatera Barat</option>
-                      <option value="Bengkulu">Bengkulu</option>
-                      <option value="Riau">Riau</option>
-                      <option value="Kepulauan Riau">Kepulauan Riau</option>
-                      <option value="Jambi">Jambi</option>
-                      <option value="Lampung">Lampung</option>
-                      <option value="Bangka Belitung">Bangka Belitung</option>
-                      <!-- Pulau Kalimantan -->
-                      <option value="Kalimantan Barat">Kalimantan Barat</option>
-                      <option value="Kalimantan Timur">Kalimantan Timur</option>
-                      <option value="Kalimantan Selatan">Kalimantan Selatan</option>
-                      <option value="Kalimantan Tengah">Kalimantan Tengah</option>
-                      <option value="Kalimantan Utara">Kalimantan Utara</option>
-                      <!-- Pulau Jawa -->
-                      <option value="Banten">Banten</option>
-                      <option value="DKI Jakarta">DKI Jakarta</option>
-                      <option value="Jawa Barat">Jawa Barat</option>
-                      <option value="Jawa Tengah">Jawa Tengah</option>
-                      <option value="DI Yogyakarta">DI Yogyakarta</option>
-                      <option value="Jawa Timur">Jawa Timur</option>
-                      <!-- Pulau Nusa Tenggara & Bali -->
-                      <option value="Bali">Bali</option>
-                      <option value="Nusa Tenggara Timur (NTT)">Nusa Tenggara Timur (NTT)</option>
-                      <option value="Nusa Tenggara Barat (NTB)">Nusa Tenggara Barat (NTB)</option>
-                      <!-- Pulau Sulawesi -->
-                      <option value="Gorontalo">Gorontalo</option>
-                      <option value="Sulawesi Barat">Sulawesi Barat</option>
-                      <option value="Sulawesi Tengah">Sulawesi Tengah</option>
-                      <option value="Sulawesi Utara">Sulawesi Utara</option>
-                      <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
-                      <option value="Sulawesi Selatan">Sulawesi Selatan</option>
-                      <option value="Maluku Utara">Maluku Utara</option>
-                      <option value="Maluku">Maluku</option>
-                      <option value="Papua Barat">Papua Barat</option>
-                      <option value="Papua (Daerah Khusus)">Papua (Daerah Khusus)</option>
+                      @foreach ($provinces as $provinsi)
+                          <option value="{{$provinsi->id}}">{{$provinsi->name}}</option>
+                      @endforeach
                     </select>
                     @error('Provinsi')
                       <div class="invalid-feedback">
@@ -146,11 +111,8 @@
 
                   <label for="inputEmail4" id="label-pendaftaran" class="form-label pt-3">Asal Kota/Kabupaten</label>
                   <div class="input-group">
-                    <select class="form-select" name="KotaKabupaten" id="input-pendaftaran" aria-label="Example select with button addon" required >
+                    <select class="form-select Kabupaten" name="KotaKabupaten" id="input-pendaftaran" aria-label="Example select with button addon" required >
                       <option disabled selected value="">Pilih Kota/Kabupaten</option>
-                      <option value="Nanggroe Aceh Darussalam">Nanggroe Aceh Darussalam</option>
-                      <option value="Sumatera Utara">Sumatera Utara</option>
-                      <option value="Sumatera Selatan">Sumatera Selatan</option>
                     </select>
                     @error('KotaKabupaten')
                       <div class="invalid-feedback">
@@ -161,11 +123,8 @@
 
                   <label for="inputEmail4" id="label-pendaftaran" class="form-label pt-3">Asal Kecamatan</label>
                   <div class="input-group">
-                    <select class="form-select" name="Kecamatan" id="input-pendaftaran" aria-label="Example select with button addon" required >
+                    <select class="form-select Kecamatan" name="Kecamatan" id="input-pendaftaran" aria-label="Example select with button addon" required >
                       <option disabled selected value="">Pilih Kecamatan</option>
-                      <option value="Nanggroe Aceh Darussalam">Nanggroe Aceh Darussalam</option>
-                      <option value="Sumatera Utara">Sumatera Utara</option>
-                      <option value="Sumatera Selatan">Sumatera Selatan</option>
                     </select>
                     @error('Kecamatan')
                       <div class="invalid-feedback">
@@ -269,5 +228,58 @@
 @endsection
 
 @push('addonStyle')
-<link rel="stylesheet" href="{{URL::asset('assets/Main/style/pendaftaran.css')}}">
+  <link rel="stylesheet" href="{{URL::asset('assets/Main/style/pendaftaran.css')}}">
+@endpush
+
+@push('addonScript')
+    <script>
+      $(function(){
+        $.ajaxSetup({
+          headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+
+        $(function(){
+          $('.Provinsi').on('change', function(){
+            let id_provinsi = $('.Provinsi').val();
+            $.ajax({
+              url : "{{route('getKabupaten')}}",
+              type : 'POST',
+              data : {id_provinsi:id_provinsi},
+              cache : false,
+
+              success: function(msg){
+                $('.Kabupaten').html(msg);
+                // $('.Kecamatan').html('');
+              },
+              error: function(data){
+                console.log('error:',data)
+              }
+            })
+          })
+        })
+
+        $(function(){
+          $('.Kabupaten').on('change', function(){
+            let id_kabupaten = $('.Kabupaten').val();
+            $.ajax({
+              url : "{{route('getKecamatan')}}",
+              type : 'POST',
+              data : {id_kabupaten:id_kabupaten},
+              cache : false,
+
+              success: function(msg){
+                $('.Kecamatan').html(msg);
+              },
+              error: function(data){
+                console.log('error:',data)
+              }
+            })
+          })
+        })
+      });
+    </script>
+@endpush
+
+@push('addonHead')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush

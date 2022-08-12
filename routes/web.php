@@ -37,24 +37,12 @@ Route::get('/regulasi-pp', [simtaruController::class, 'regulasiPP']);
 
 Route::get('/tata-ruang', [simtaruController::class, 'mapsIndex']);
 Route::get('/tata-ruang/detail', [simtaruController::class, 'mapsDetail']);
+
 Route::get('/pendaftaran', [simtaruController::class, 'pendaftaranIndex'])->name('pendaftaran');
 Route::post('/pendaftaran', [simtaruController::class, 'pendaftaranStore']);
+Route::post('/getKabupaten', [simtaruController::class, 'getKabupaten'])->name('getKabupaten');
+
+Route::post('/getKecamatan', [simtaruController::class, 'getKecamatan'])->name('getKecamatan');
+
 Route::get('/tanggapan', [simtaruController::class, 'tanggapanIndex']);
 Route::post('/tanggapan', [simtaruController::class, 'tanggapanStore']);
-// Access Admin Page
-// Route::get('/', function () {
-//     return view('CMS.Page.index');
-// });
-
-// Route::get('/login', function () {
-//     return view('CMS.Page.login');
-// });
-// Route::get('/insert', function () {
-//     $stuRef = app('firebase.firestore')->database()->collection('Tanggapan')->newDocument();
-//     $stuRef->set([
-//         'id' => 'seven',
-//         'judul' => 'tes',
-//         'nama' => 'tess',
-//         'pesan' => 'tesss'
-//     ]);
-// });

@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 
+use App\Models\Province;
+use App\Models\Regency;
+use App\Models\District;
+
 class simtaruController extends Controller
 {
     public function index()
@@ -51,24 +55,37 @@ class simtaruController extends Controller
                 $maps = null;
             }
         }
-        // if ($request->Kota == 'Makassar' && $request->RTR == 'RTRW Kab/Kota') {
-        //     $datas = app('firebase.firestore')->database()->collection('Peta')->document('EC4sTg1OI0EMyNqKlJxv')->snapshot();
-        // } elseif ($request->Kota == 'Gowa' && $request->RTR == 'RTDTR Kab/Kota') {
-        //     $datas = app('firebase.firestore')->database()->collection('Peta')->document('aMm5oKrJaeCMESgpPqjK')->snapshot();
-        // } elseif ($request->Kota == 'Maros' && $request->RTR == 'RTDTR Kab/Kota') {
-        //     $datas = app('firebase.firestore')->database()->collection('Peta')->document('dhqNLJ8DlIuwUDD4IpBk')->snapshot();
-        // } elseif ($request->Kota == 'Makassar' && $request->RTR == 'RTR Maminasata') {
-        //     $datas = app('firebase.firestore')->database()->collection('Peta')->document('0LP7G6affsbKc99sh5gD')->snapshot();
-        // } else {
-        //     $datas = null;
-        // }
-        // return dd($datas);
         return view('Main.Page.maps', ['datas' => $datas, 'maps' => $maps]);
     }
 
     public function pendaftaranIndex()
     {
-        return view('Main.Page.pendaftaran');
+        // Get semua data
+        $provinces = Province::all();
+        return view('Main.Page.pendaftaran', compact('provinces'));
+    }
+
+    public function getKabupaten(request $request)
+    {
+        $id_provinsi = $request->id_provinsi;
+        $KotaKabupatens = Regency::where('province_id', $id_provinsi)->get();
+        $option = "<option disabled selected value=''>Pilih Kota/Kabupaten</option>";
+        foreach ($KotaKabupatens as $Kabupaten) {
+            $option .= "<option value='$Kabupaten->id'>$Kabupaten->name</option>";
+        }
+        echo $option;
+    }
+
+    public function getKecamatan(request $request)
+    {
+        $id_kabupaten = $request->id_kabupaten;
+        $Kecamatans = District::where('regency_id', $id_kabupaten)->get();
+
+        $option = "<option disabled selected value=''>Pilih Kecamatan</option>";
+        foreach ($Kecamatans as $Kecamatan) {
+            $option .= "<option value='$Kecamatan->id'>$Kecamatan->name</option>";
+        }
+        echo $option;
     }
 
     public function pendaftaranStore(Request $request)
@@ -94,18 +111,14 @@ class simtaruController extends Controller
         $current_time->timezone('GMT+8');
         $current_time = $current_time->toDateTimeString();
 
-        // $SHP = $request->file('SHP');
-        // $file = $SHP->getClientOriginalName();
-        // $firebase_storage_path = 'SHP/';
-        // $bucket = app('firebase.storage')->getBucket();
-        // $object = $bucket->upload($SHP, [
-        //     'name' => $firebase_storage_path . $file,
-        //     'predefinedAcl' => 'publicRead'
-        // ]);
 
-        // $publicUrl = "https://{$bucket->name()}.storage.googleapis.com/{$object->name()}";
+        $provinsi = Province::where('id', $request->Provinsi)->get();
+        $KotaKabupaten = Regency::where('id', $request->KotaKabupaten)->get();
+        $Kecamatan = District::where('id', $request->Kecamatan)->get();
+        $request->Provinsi = $provinsi[0]['name'];
+        $request->KotaKabupaten = $KotaKabupaten[0]['name'];
+        $request->Kecamatan = $Kecamatan[0]['name'];
 
-        // ***************************
         $image = $request->file('SHP'); //image file from frontend  
         $firebase_storage_path = 'SHP/';
         $name = $image->getClientOriginalName();
@@ -119,7 +132,7 @@ class simtaruController extends Controller
             $uploadedfile = fopen($localfolder . $file, 'r');
             $object = $bucket->upload(
                 $uploadedfile,
-                ['name' => $firebase_storage_path . $name],
+                ['name' => $firebase_storage_path . $FileName],
                 ['acl' => []],
                 ['predefinedAcl' => 'publicRead'],
                 ['metadata' => [
